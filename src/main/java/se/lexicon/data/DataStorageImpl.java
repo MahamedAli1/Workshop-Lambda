@@ -1,6 +1,5 @@
 package se.lexicon.data;
 
-
 import se.lexicon.model.Person;
 import se.lexicon.util.PersonGenerator;
 
@@ -11,13 +10,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-
-/**
- * Create implementations for all methods. I have already provided an implementation for the first method *
- */
 public class DataStorageImpl implements DataStorage {
 
-    private static final DataStorage INSTANCE;
+    private static final DataStorageImpl INSTANCE;
 
     static {
         INSTANCE = new DataStorageImpl();
@@ -29,10 +24,9 @@ public class DataStorageImpl implements DataStorage {
         personList = PersonGenerator.getInstance().generate(1000);
     }
 
-    static DataStorage getInstance() {
+    public static DataStorage getInstance() {
         return INSTANCE;
     }
-
 
     @Override
     public List<Person> findMany(Predicate<Person> filter) {
@@ -47,36 +41,55 @@ public class DataStorageImpl implements DataStorage {
 
     @Override
     public Person findOne(Predicate<Person> filter) {
-        //todo: implement the method
+        for (Person person : personList) {
+            if (filter.test(person)) {
+                return person;
+            }
+        }
         return null;
     }
 
     @Override
     public String findOneAndMapToString(Predicate<Person> filter, Function<Person, String> personToString) {
-        //todo: implement the method
+        for (Person person : personList) {
+            if (filter.test(person)) {
+                return personToString.apply(person);
+            }
+        }
         return null;
     }
 
     @Override
     public List<String> findManyAndMapEachToString(Predicate<Person> filter, Function<Person, String> personToString) {
-        //todo: implement the method
-        return null;
+        List<String> result = new ArrayList<>();
+        for (Person person : personList) {
+            if (filter.test(person)) {
+                result.add(personToString.apply(person));
+            }
+        }
+        return result;
     }
 
     @Override
     public void findAndDo(Predicate<Person> filter, Consumer<Person> consumer) {
-        //todo: implement the method
+        for (Person person : personList) {
+            if (filter.test(person)) {
+                consumer.accept(person);
+            }
+        }
     }
 
     @Override
     public List<Person> findAndSort(Comparator<Person> comparator) {
-        //todo: implement the method
-        return null;
+        List<Person> result = new ArrayList<>(personList);
+        result.sort(comparator);
+        return result;
     }
 
     @Override
     public List<Person> findAndSort(Predicate<Person> filter, Comparator<Person> comparator) {
-        //todo: implement the method
-        return null;
+        List<Person> result = findMany(filter);
+        result.sort(comparator);
+        return result;
     }
 }
